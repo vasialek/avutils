@@ -7,8 +7,8 @@
     <ProjectGuid>{FC414490-11D6-4AB6-A3C8-B354C34235B1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Avutils</RootNamespace>
-    <AssemblyName>Avutils</AssemblyName>
+    <RootNamespace>Avutils.EasyConsole</RootNamespace>
+    <AssemblyName>EasyConsole</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

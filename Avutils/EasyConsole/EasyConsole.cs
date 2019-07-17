@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
-namespace Avutils
+namespace Avutils.EasyConsole
 {
 	public class FileMenu
 	{
