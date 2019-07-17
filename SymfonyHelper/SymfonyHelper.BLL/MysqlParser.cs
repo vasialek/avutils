@@ -80,6 +80,7 @@ namespace SymfonyHelper.BLL
 			var files = new List<FilesModel>();
 			int nr = 0;
 			string s;
+			string[] ar = null;
 
 			using (TextReader r = new StreamReader(stream))
 			{
@@ -91,7 +92,7 @@ namespace SymfonyHelper.BLL
 						if (s.Length > 10 && IsCommented(s) == false)
 						{
 							s = s.Trim(_sqlLineSeparators);
-							string[] ar = s.Split(new char[] { ',' });
+							ar = SplitIntoFields(s);
 
 							var f = new FilesModel();
 							f.Id = int.Parse(ar[0]);
@@ -109,6 +110,11 @@ namespace SymfonyHelper.BLL
 					{
 						Console.WriteLine("Error parsing line #{0}. {1}", nr, ex.Message);
 						Console.WriteLine(s);
+						Console.WriteLine("Splitted SQL:");
+						for (int i = 0; i < ar?.Length; i++)
+						{
+							Console.WriteLine("{0}:  `{1}`", i, ar[i]);
+						}
 						Console.WriteLine(ex.ToString());
 						Console.WriteLine("----------------------------------------------------------------------");
 						throw;
