@@ -5,6 +5,8 @@ namespace SymfonyHelper.Definition.Interfaces
 {
 	public interface ISqlParser
 	{
+		string[] SplitIntoFields(string sql);
+
 		FilesModel[] ParseInsertIntoFiles(Stream stream);
 	}
 }
