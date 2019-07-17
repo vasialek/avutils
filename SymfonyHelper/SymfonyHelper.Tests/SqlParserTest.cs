@@ -254,6 +254,19 @@ namespace SymfonyHelper.Tests
 			files.Should().HaveCount(1);
 		}
 
+		[TestMethod]
+		public void ParseInsertIntoFiles_EndWithSemicolon()
+		{
+			string[] lines = new string[]
+			{
+				"(550, 1, 0, 'Daily_Mini.jpg', '976414e4073ce80a15d4702f969596bf.jpg', 1, NULL, 550, 6, '2010-10-18 08:56:44', '0000-00-00 00:00:00');",
+			};
+
+			var files = ReadSqlLines(lines);
+
+			files.Single().Id.Should().Be(550);
+		}
+
 		#endregion
 
 		private FilesModel[] ReadSqlLines(string[] lines = null)

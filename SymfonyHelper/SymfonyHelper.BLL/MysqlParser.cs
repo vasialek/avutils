@@ -13,7 +13,7 @@ namespace SymfonyHelper.BLL
 	public class MysqlParser : ISqlParser
 	{
 		// Strip comma and braces from begining and end of line
-		private static readonly char[] _sqlLineSeparators = "(),".ToCharArray();
+		private static readonly char[] _sqlLineSeparators = "(),;".ToCharArray();
 
 		// Strip quotes from fields
 		private static readonly char[] _fieldSeparators = " '".ToCharArray();
