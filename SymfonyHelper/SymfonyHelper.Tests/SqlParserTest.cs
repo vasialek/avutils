@@ -94,6 +94,16 @@ namespace SymfonyHelper.Tests
 			fields.Should().HaveCount(2);
 		}
 
+		[TestMethod]
+		public void SplitIntoFields_GetTwo_WhenTwoAreEnquoted()
+		{
+			string s = "'1', '23.jpg'";
+
+			string[] fields = _parser.SplitIntoFields(s);
+
+			fields[1].Should().Be("23.jpg");
+		}
+
 		#endregion
 
 		#region Parse inserts into files table

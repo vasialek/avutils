@@ -31,39 +31,49 @@ namespace SymfonyHelper.BLL
 
 			for (int i = 0; i < sql.Length; i++)
 			{
-				c = sql[i];
-				if (isField)
+				try
 				{
-					// Field could ends with comma (if not enclosed in quotes) or with quote (if enclosed with quotes)
-					if (IsEndOfField(sql[i], currentFieldSeparator, wasEscapce))
+					if (isField)
 					{
-						// Get end of field value and put it in array
-						fields.Add(v.Trim());
-						v = "";
-						isField = false;
-					}
-					else
-					{
-						// Collecting field value
-						v += sql[i];
-					}
-				}
-				else
-				{
-					// End of field, search for non-empty or for quote
-					if (IsStartOfField(sql[i], ref currentFieldSeparator, wasEscapce))
-					{
-						isField = true;
-						// Add to field if it is not quote
-						if (currentFieldSeparator == null)
+						// Field could ends with comma (if not enclosed in quotes) or with quote (if enclosed with quotes)
+						if (IsEndOfField(sql[i], currentFieldSeparator, wasEscapce))
 						{
+							// Get end of field value and put it in array
+							fields.Add(v.Trim());
+							v = "";
+							isField = false;
+							currentFieldSeparator = null;
+						}
+						else
+						{
+							// Collecting field value
 							v += sql[i];
 						}
 					}
-				}
+					else
+					{
+						// End of field, search for non-empty or for quote
+						if (IsStartOfField(sql[i], ref currentFieldSeparator, wasEscapce))
+						{
+							isField = true;
+							// Add to field if it is not quote
+							if (currentFieldSeparator == null)
+							{
+								v += sql[i];
+							}
+						}
+					}
 
-				// TODO: handle several \
-				wasEscapce = sql[i] == '\\';
+					// TODO: handle several \
+					wasEscapce = sql[i] == '\\';
+				}
+				catch (FormatException fex)
+				{
+					Console.WriteLine(fex.Message);
+					Console.WriteLine(sql);
+					Console.WriteLine("^".PadLeft(i + 1, ' '));
+					throw;
+				}
 			}
 
 			// Adds if value is
@@ -158,9 +168,22 @@ namespace SymfonyHelper.BLL
 			if (wasEscaped == false && (c == '\'' || c == '"'))
 			{
 				currenctSeparator = c;
+				return true;
 			}
 
-			return true;
+			// SQL field should start with quote, digit or N (as NULL)
+			if (Char.IsDigit(c) || c == 'n' || c == 'N')
+			{
+				return true;
+			}
+
+			// Skip comma after field
+			if (c == ',')
+			{
+				return false;
+			}
+
+			throw new FormatException($"SQL field has incorrect symbol `{c}`.");
 		}
 
 		private bool IsEndOfField(char c, char? currentSeparator, bool wasEscape)
