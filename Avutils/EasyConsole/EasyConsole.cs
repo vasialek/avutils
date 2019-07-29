@@ -8,7 +8,7 @@ namespace Avutils.EasyConsole
 {
 	public class FileMenu
 	{
-		private readonly string _directory = null;
+		private string _directory = null;
 		private static readonly char[] _symbols = new char[] { '"' };
 
 		public FileMenu(string directory)
@@ -25,6 +25,12 @@ namespace Avutils.EasyConsole
 			string filename = null;
 			var menu = new Menu();
 			menu.Add($"Back to main menu from `{_directory}`", () => { }, ConsoleColor.DarkYellow);
+			menu.Add("Change working directory", () =>
+			{
+				ChangeWorkingDirectory();
+				// Repeat read of filename in new directory
+				filename = GetFullFilename(filemask);
+			}, ConsoleColor.DarkGray);
 			menu.Add("Enter file name", () =>
 			{
 				filename = Input.ReadString("Full path to file: ");
@@ -38,6 +44,43 @@ namespace Avutils.EasyConsole
 			menu.Display();
 
 			return filename?.Trim(_symbols);
+		}
+
+		private void ChangeWorkingDirectory()
+		{
+			string wd = _directory;
+			bool isRunning = true;
+			do
+			{
+				Console.Clear();
+				var menu = new Menu();
+				menu.Add("Quit without setting new working directory.", () => { isRunning = false; }, ConsoleColor.Red);
+				menu.Add($"Finish and set working directory to `{wd}`", () =>
+				{
+					_directory = wd;
+					isRunning = false;
+				}, ConsoleColor.DarkYellow);
+
+				menu.Add("Enter directory manually", () =>
+				{
+					wd = Input.ReadString("Full path to directory: ");
+					wd = new DirectoryInfo(wd).FullName;
+				}, ConsoleColor.DarkGray);
+				menu.Add("..", () =>
+				{
+					wd = Path.Combine(wd, "..");
+					wd = new DirectoryInfo(wd).FullName;
+				});
+				foreach (string dir in Directory.GetDirectories(wd))
+				{
+					menu.Add(String.Concat(new DirectoryInfo(dir).Name, "\\"), () =>
+					{
+						wd = dir;
+					});
+				}
+
+				menu.Display();
+			} while (isRunning);
 		}
 	}
 
